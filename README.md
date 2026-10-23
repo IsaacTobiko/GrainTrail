@@ -62,14 +62,7 @@ Full design: [docs/DESIGN.md](docs/DESIGN.md)
 - [ ] SMS, USSD and simulated escrow
 - [ ] Claude assistant and document checker
 - [ ] ML models
-- [ ] Tracking map and dashboard
-- [ ] Tests, CI, deployment and demo video
-
-## Getting started
-
-Setup instructions will be added with the first backend release.
-
-## Privacy
+- [ ] Tracking map 
 
 Identity images are only collected with consent, used for verification and then deleted. Only test data is used in demos.
 
