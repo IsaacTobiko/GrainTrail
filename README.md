@@ -1,26 +1,47 @@
 # GrainTrail
 
-A deal tracker for maize brokers and buyers at the Kenya and Tanzania border. Log each deal, record grain quality, track every load from the border to the buyer, and keep payment records in one place. Built with FastAPI and Next.js.
+Follow your grain from the border to the buyer.
 
-**Status:** in design and early development. Nothing below is shipped until it is ticked in the roadmap.
+GrainTrail is a deal tracker for maize brokers and buyers at the Kenya and Tanzania border. Log each deal, record grain quality, track every load from the border to the buyer, and keep payment records in one place. Built with FastAPI and Next.js.
 
-## The problem
+## Why it exists
 
-At border yards like Illasit, maize moves fast and on trust. Brokers lose money when a load is stopped over moisture, missing documents or overloading. Buyers wait without knowing where their truck is. Payments and quality disputes are settled by phone call and memory. GrainTrail gives every deal one shared record.
+At border yards like Illasit, maize moves fast and on trust. A load stopped over moisture, missing papers or overloading can wipe out a broker's whole margin. Buyers wait for hours without knowing where their truck is. Payments and quality disputes are settled by phone call and memory. GrainTrail gives every deal one shared record that all sides can trust.
 
-## Planned features
+## What it does
 
+**Deals**
+- Create a deal with buyer, seller, bags, price per bag and quality grade
+- Moisture readings with photos attached to every load
+- Document checklist per load: phytosanitary certificate, certificate of origin and cess
+- A load cannot be marked cleared until every required document is ticked
+
+**Load trail**
+- Status flow: ordered, loading, weighed, cleared, in transit, delivered, closed
+- A stopped state with the reason and estimated cost
+- SMS update to the buyer at every step
+- Live truck position on a map
+
+**Trust and identity**
 - Phone number and OTP login
-- Identity verification with ID upload and a live selfie match
-- Deal records with buyer, seller, bags, price and quality
-- Moisture readings with photos
-- Document checklist per load (phytosanitary certificate, certificate of origin, cess)
-- Load status trail from loading to delivery, with SMS updates to the buyer
-- Payment records with simulated escrow
-- Claude assistant that updates deals from plain messages in English and Swahili
-- Stop risk and price forecast models
-- USSD access for feature phones
-- Simulated GPS truck tracking on a map
+- Three verification tiers: OTP, ID upload with OCR, and live selfie with face match and liveness check
+- Admin review queue for low confidence cases
+- Ratings after every deal and a trust score for each user
+- Full audit log of status, payment and verification actions
+
+**Payments**
+- Deposit and balance records with M-Pesa references
+- Escrow that holds the deposit and releases the balance when delivery is confirmed
+
+**AI and ML**
+- Claude assistant: send "Deal 12 weighed, moisture 14%" and the deal updates, in English or Swahili
+- Document checker: reads a certificate photo, extracts the fields and flags what is missing
+- Stop risk model: scores how likely a load is to be stopped
+- Price forecast: predicts border maize prices
+- Trust score model: estimates default risk from deal history
+
+**Feature phone access**
+- USSD menu to check a deal, update a status and see today's prices
 
 ## Tech stack
 
@@ -29,18 +50,43 @@ At border yards like Illasit, maize moves fast and on trust. Brokers lose money 
 | Frontend | Next.js, TypeScript, Tailwind CSS |
 | Backend | FastAPI, SQLAlchemy, Alembic, Pydantic |
 | Data | PostgreSQL, Redis, MinIO |
-| Jobs | Celery or ARQ |
-| AI and ML | Claude API, scikit-learn, XGBoost, Prophet, InsightFace, MLflow |
-| Messaging | Africa's Talking sandbox |
-| Payments | M-Pesa Daraja sandbox |
+| Jobs | Celery |
+| AI and ML | Claude API, scikit-learn, XGBoost, Prophet, InsightFace, OpenCV, MLflow |
+| Messaging | Africa's Talking (SMS and USSD) |
+| Payments | M-Pesa Daraja |
 | Tooling | Docker Compose, pytest, GitHub Actions |
 
-## What is real and what is simulated
+## Architecture
 
-- Real: deal logic, status flow, OTP, ML pipelines, KYC pipeline
-- Simulated: escrow (sandbox only, no real money), GPS tracking, ID checks (not checked against government records)
-- Synthetic data: the stop risk and trust models are trained on generated data and labeled as such
-- Public data: the price forecast uses public maize price data
+```
+Next.js  ->  FastAPI  ->  PostgreSQL
+                |-------> Redis (OTP, rate limits, live updates)
+                |-------> MinIO (private ID and grain images)
+                |-------> Celery workers (SMS, OCR, face match, scoring)
+                |-------> Claude API
+                |-------> Africa's Talking, M-Pesa Daraja
+```
+
+Models load once at startup and are served from the same API.
+
+## Simulated and synthetic
+
+Be clear about what is real and what is not:
+- Escrow runs on the Daraja sandbox, so no real money moves
+- GPS positions come from a script that simulates a truck
+- ID checks are not matched against government records (IPRS or NIDA)
+- The stop risk and trust models are trained on generated data built from documented rules
+- The price forecast uses public maize price data
+
+## Security
+
+- OTP rate limits and short lived JWTs in httpOnly cookies
+- Role checks on every endpoint
+- Pydantic validation on all input
+- Audit log for sensitive actions
+- Private encrypted storage for identity images, deleted after verification
+- Consent screen before any ID or selfie capture
+- Secrets kept in environment files, never committed
 
 ## Project structure
 
@@ -52,31 +98,29 @@ docs/       Design documents
 
 Full design: [docs/DESIGN.md](docs/DESIGN.md)
 
-## Roadmap
+## Run locally
 
-- [x] Project design
-- [ ] Backend skeleton, database, OTP login
-- [ ] Deals, statuses and audit log
-- [ ] Quality checks, documents and payment records
-- [ ] Identity verification
-- [ ] SMS, USSD and simulated escrow
-- [ ] Claude assistant and document checker
-- [ ] ML models
-- [ ] Tracking map and dashboard
-- [ ] Tests, CI, deployment and demo video
+```bash
+git clone git@github.com:IsaacTobiko/GrainTrail.git
+cd GrainTrail
+cp backend/.env.example backend/.env
+docker compose up --build
+```
 
-## Getting started
+Frontend runs on http://localhost:3000 and the API docs on http://localhost:8000/docs.
 
-Setup instructions will be added with the first backend release.
+## Tests
 
-## Privacy
-
-Identity images are only collected with consent, used for verification and then deleted. Only test data is used in demos.
+```bash
+cd backend
+pytest
+```
 
 ## Author
 
-Isaac Tobiko, [GitHub](https://github.com/IsaacTobiko), [LinkedIn](https://linkedin.com/in/isaactobiko/)
+Isaac Tobiko
+[GitHub](https://github.com/IsaacTobiko) | [LinkedIn](https://linkedin.com/in/isaactobiko/)
 
 ## License
 
-All rights reserved for now.# GrainTrail
+All rights reserved.
