@@ -18,11 +18,13 @@ export default function AuthPage({
   searchParams: Promise<{ mode?: string }>;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-line bg-card md:grid-cols-2">
-        <AuthHero />
+    <main className="min-h-screen p-3 md:p-4">
+      <div className="grid min-h-[calc(100vh-1.5rem)] w-full overflow-hidden rounded-3xl border border-line bg-card md:min-h-[calc(100vh-2rem)] md:grid-cols-2">
         <Suspense fallback={<div className="min-h-96" />}>
-          <AuthCardLoader searchParams={searchParams} />
+          <AuthHero />
+          <Suspense fallback={<div className="min-h-96" />}>
+            <AuthCardLoader searchParams={searchParams} />
+          </Suspense>
         </Suspense>
       </div>
     </main>

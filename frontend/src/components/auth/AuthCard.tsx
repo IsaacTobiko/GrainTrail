@@ -10,7 +10,7 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
   const [mode, setMode] = useState<Mode>(initialMode);
 
   return (
-    <section className="flex flex-col justify-center gap-8 p-8 md:p-12">
+    <section className="mx-auto flex w-full max-w-md flex-col justify-center gap-8 p-8 md:p-12">
       <div className="relative mx-auto grid w-56 grid-cols-2 rounded-full border border-line bg-ink p-1 text-sm">
         <span
           className={`absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-gradient-to-r from-leaf to-lime transition-transform duration-300 ${
