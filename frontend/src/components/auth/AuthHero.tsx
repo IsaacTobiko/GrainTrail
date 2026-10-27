@@ -4,7 +4,7 @@ export default function AuthHero() {
   return (
     <section className="relative flex min-h-64 items-end overflow-hidden md:min-h-0">
       <Image
-        src="/Photo.jpeg"
+        src="/auth-hero.jpeg"
         alt="A hand holding a phone in a maize field at sunset"
         fill
         priority
