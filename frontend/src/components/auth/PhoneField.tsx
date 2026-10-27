@@ -6,7 +6,7 @@ export default function PhoneField() {
       <select
         name="prefix"
         defaultValue="+254"
-        className={`${inputClass} min-w-0 flex-1`}
+        className={`${inputClass} w-32! shrink-0 px-3! text-center`}
       >
         <option value="+254">KE +254</option>
         <option value="+255">TZ +255</option>
