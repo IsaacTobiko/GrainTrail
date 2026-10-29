@@ -13,12 +13,12 @@ export default function AuthHero() {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
       <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink/70 to-transparent" />
-      <div className="absolute left-8 top-8 text-lg font-semibold">
+      <div className="absolute left-8 top-8 font-display text-xl font-bold">
         Grain
         <span className="text-lime">Trail</span>
       </div>
       <div className="relative p-8">
-        <h2 className="text-2xl font-semibold leading-snug md:text-3xl">
+        <h2 className="font-display text-2xl font-semibold leading-snug md:text-3xl">
           Follow your grain from the border to the buyer.
         </h2>
         <p className="mt-2 text-sm text-snow/80">
