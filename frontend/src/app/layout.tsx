@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-
-import { Poppins } from "next/font/google";
-
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
+});
 
-  weight: ["400", "500", "600", "700"],
-
-  variable: "--font-poppins",
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
 });
 
 export const metadata: Metadata = {
   title: "GrainTrail",
-
   description: "Follow your grain from the border to the buyer.",
 };
 
@@ -26,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} font-sans antialiased bg-ink text-snow`}
+        className={`${inter.variable} ${jakarta.variable} font-sans antialiased bg-ink text-snow`}
       >
         {children}
       </body>
