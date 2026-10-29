@@ -34,12 +34,16 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
       </div>
 
       <div className="text-center">
+        <h1 className="font-display text-3xl font-semibold">
+          {mode === "login" ? "Welcome back" : "Create your account"}
+        </h1>
         <p className="mt-2 text-sm text-muted">
           {mode === "login"
             ? "Enter your phone number and we will text you a code."
             : "Join with your phone number, no password needed."}
         </p>
       </div>
+
       {mode === "login" ? <LoginForm /> : <SignupForm />}
     </section>
   );
