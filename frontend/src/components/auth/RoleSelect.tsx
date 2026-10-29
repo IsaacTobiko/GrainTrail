@@ -19,7 +19,7 @@ export default function RoleSelect() {
             key={item}
             type="button"
             onClick={() => setRole(item)}
-            className={`rounded-full border px-4 py-2 text-sm transition ${
+            className={`rounded-lg border px-4 py-2 text-sm transition ${
               role === item
                 ? "border-transparent bg-gradient-to-r from-leaf to-lime font-semibold text-ink"
                 : "border-line text-muted hover:border-emerald"
