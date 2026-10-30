@@ -2,23 +2,14 @@
 
 @theme inline {
   --color-ink: #050a07;
-
   --color-card: #0c1a12;
-
   --color-line: #1f3a2a;
-
   --color-leaf: #22c55e;
-
   --color-lime: #c6f432;
-
   --color-emerald: #34d399;
-
   --color-snow: #f4f7f5;
-
   --color-muted: #8fa79a;
-
   --color-gold: #f5b942;
-
   --color-danger: #ef4444;
 
   --font-sans: var(--font-inter);
@@ -27,6 +18,5 @@
 
 body {
   background: #050a07;
-
   color: #f4f7f5;
 }
