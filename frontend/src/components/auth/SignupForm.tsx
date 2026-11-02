@@ -1,12 +1,10 @@
 "use client";
 
 import PhoneField from "./PhoneField";
-
-import RoleSelect from "./RoleSelect";
-
+import { type Role } from "./RolePicker";
 import { buttonClass, inputClass } from "./styles";
 
-export default function SignupForm() {
+export default function SignupForm({ role }: { role: Role }) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -17,6 +15,8 @@ export default function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <input type="hidden" name="role" value={role} />
+
       <div className="grid grid-cols-2 gap-2">
         <input
           name="first_name"
@@ -34,8 +34,6 @@ export default function SignupForm() {
       </div>
 
       <PhoneField />
-
-      <RoleSelect />
 
       <label className="flex items-start gap-2 text-xs text-muted">
         <input

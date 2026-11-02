@@ -3,11 +3,15 @@
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
+import RolePicker, { type Role } from "./RolePicker";
 
 type Mode = "login" | "signup";
 
 export default function AuthCard({ initialMode }: { initialMode: Mode }) {
   const [mode, setMode] = useState<Mode>(initialMode);
+  const [role, setRole] = useState<Role | null>(null);
+
+  const choosingRole = mode === "signup" && !role;
 
   return (
     <section className="mx-auto flex w-full max-w-md flex-col justify-center gap-8 p-8 md:p-12">
@@ -26,26 +30,53 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
         </button>
         <button
           type="button"
-          onClick={() => setMode("signup")}
+          onClick={() => {
+            setMode("signup");
+            setRole(null);
+          }}
           className={`relative z-10 rounded-md py-2 font-medium transition-colors ${mode === "signup" ? "text-ink" : "text-muted"}`}
         >
           Sign Up
         </button>
       </div>
 
-      <div key={`${mode}-text`} className="text-center">
+      <div key={`${mode}-${role}-text`} className="text-center">
         <h1 className="anim-fade-up font-display text-3xl font-semibold [--delay:200ms]">
-          {mode === "login" ? "Welcome back" : "Create your account"}
+          {mode === "login"
+            ? "Welcome back"
+            : choosingRole
+              ? "Choose your path"
+              : "Create your account"}
         </h1>
         <p className="anim-fade-up mt-2 text-sm text-muted [--delay:300ms]">
           {mode === "login"
             ? "Enter your phone number and we will text you a code."
-            : "Join with your phone number, no password needed."}
+            : choosingRole
+              ? "Select how you'll use GrainTrail."
+              : "Join with your phone number, no password needed."}
         </p>
       </div>
 
-      <div key={`${mode}-form`} className="anim-fade-up [--delay:400ms]">
-        {mode === "login" ? <LoginForm /> : <SignupForm />}
+      <div
+        key={`${mode}-${role}-body`}
+        className="anim-fade-up [--delay:400ms]"
+      >
+        {mode === "login" ? (
+          <LoginForm />
+        ) : choosingRole ? (
+          <RolePicker onSelect={setRole} />
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => setRole(null)}
+              className="mb-4 text-sm text-muted hover:text-snow"
+            >
+              ← Change role ({role})
+            </button>
+            <SignupForm role={role!} />
+          </>
+        )}
       </div>
     </section>
   );
