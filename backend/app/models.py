@@ -26,3 +26,12 @@ class User(Base):
     role: Mapped[Role] = mapped_column(Enum(Role)) 
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)  
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))  
+
+class Otp(Base):  
+    __tablename__ = "otps"  
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  
+    phone: Mapped[str] = mapped_column(String(20), index=True) 
+    code_hash: Mapped[str] = mapped_column(String(64)) 
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))  
+    used: Mapped[bool] = mapped_column(Boolean, default=False)  
