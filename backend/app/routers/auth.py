@@ -1,0 +1,54 @@
+import hmac
+from datetime import datetime, timedelta, timezone
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.models import Otp, User
+from app.schemas import PhoneIn, SignupIn, TokenOut, VerifyIn
+from app.security import create_access_token, generate_code, hash_code
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+def send_otp(db: Session, phone: str) -> None:
+    code = generate_code()
+    db.add(Otp(phone=phone, code_hash=hash_code(code), expires_at=datetime.now(timezone.utc) + timedelta(minutes=5)))
+    db.commit()
+    print(f"OTP for {phone}: {code}")
+
+
+@router.post("/signup", status_code=201)
+def signup(data: SignupIn, db: Session = Depends(get_db)):
+    if db.scalar(select(User).where(User.phone == data.phone)):
+        raise HTTPException(status_code=409, detail="Phone already registered")
+    db.add(User(first_name=data.first_name, last_name=data.last_name, phone=data.phone, role=data.role))
+    db.commit()
+    send_otp(db, data.phone)
+    return {"message": "Code sent"}
+
+
+@router.post("/login")
+def login(data: PhoneIn, db: Session = Depends(get_db)):
+    if db.scalar(select(User).where(User.phone == data.phone)):
+        send_otp(db, data.phone)
+    return {"message": "If the number is registered, a code was sent"}
+
+
+@router.post("/verify-otp", response_model=TokenOut)
+def verify_otp(data: VerifyIn, db: Session = Depends(get_db)):
+    now = datetime.now(timezone.utc)
+    otp = db.scalar(
+        select(Otp)
+        .where(Otp.phone == data.phone, Otp.used.is_(False), Otp.expires_at > now)
+        .order_by(Otp.expires_at.desc())
+    )
+    if not otp or not hmac.compare_digest(otp.code_hash, hash_code(data.code)):
+        raise HTTPException(status_code=400, detail="Invalid or expired code")
+    otp.used = True
+    user = db.scalar(select(User).where(User.phone == data.phone))
+    user.is_verified = True
+    db.commit()
+    return TokenOut(access_token=create_access_token(str(user.id)))
