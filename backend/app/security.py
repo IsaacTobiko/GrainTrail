@@ -19,3 +19,10 @@ def hash_code(code: str) -> str:
 def create_access_token(user_id: str) -> str:  
     payload = {"sub": user_id, "exp": datetime.now(timezone.utc) + timedelta(minutes=30)}  
     return jwt.encode(payload, settings.secret_key, algorithm="HS256")  
+
+def decode_access_token(token: str) -> str | None:  
+    try:  
+        payload = jwt.decode(token, settings.secret_key, algorithms=["HS256"])  
+        return payload["sub"] 
+    except jwt.PyJWTError:  
+        return None  

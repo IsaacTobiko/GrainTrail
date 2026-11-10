@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field  
+import uuid
 
+from pydantic import BaseModel, ConfigDict, Field
 from app.models import Role  
 
 
@@ -21,3 +22,13 @@ class VerifyIn(BaseModel):
 class TokenOut(BaseModel):  
     access_token: str  
     token_type: str = "bearer"  
+
+class UserOut(BaseModel):  
+    model_config = ConfigDict(from_attributes=True) 
+
+    id: uuid.UUID  
+    first_name: str  
+    last_name: str 
+    phone: str  
+    role: Role 
+    is_verified: bool 

@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Otp, User
-from app.schemas import PhoneIn, SignupIn, TokenOut, VerifyIn
+from app.deps import get_current_user  
+from app.schemas import PhoneIn, SignupIn, TokenOut, UserOut, VerifyIn  
 from app.security import create_access_token, generate_code, hash_code
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -52,3 +53,7 @@ def verify_otp(data: VerifyIn, db: Session = Depends(get_db)):
     user.is_verified = True
     db.commit()
     return TokenOut(access_token=create_access_token(str(user.id)))
+
+@router.get("/me", response_model=UserOut) 
+def me(user: User = Depends(get_current_user)):  
+    return user 
