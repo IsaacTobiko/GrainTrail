@@ -1,25 +1,45 @@
 "use client";
 
+import { useState } from "react";
 import PhoneField from "./PhoneField";
+import OtpStep from "./OtpStep";
+import { post } from "../../lib/api";
+import { normalizePhone } from "../../lib/phone";
 import { buttonClass } from "./styles";
 
 export default function LoginForm() {
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+    setError("");
+    setLoading(true);
     const data = new FormData(event.currentTarget);
-
-    console.log("login", Object.fromEntries(data));
+    const full = normalizePhone(
+      String(data.get("prefix")),
+      String(data.get("phone")),
+    );
+    try {
+      await post("/auth/login", { phone: full });
+      setPhone(full);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
+
+  if (phone) return <OtpStep phone={phone} onBack={() => setPhone("")} />;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <label className="block text-sm text-muted">Phone number</label>
-
       <PhoneField />
-
-      <button type="submit" className={buttonClass}>
-        Send code
+      {error && <p className="text-sm text-danger">{error}</p>}
+      <button type="submit" disabled={loading} className={buttonClass}>
+        {loading ? "Sending..." : "Send code"}
       </button>
     </form>
   );
