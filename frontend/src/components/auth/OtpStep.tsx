@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { post } from "../../lib/api";
 import { buttonClass, inputClass } from "./styles";
 
@@ -9,7 +10,7 @@ type Props = { phone: string; onBack: () => void };
 export default function OtpStep({ phone, onBack }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,18 +23,11 @@ export default function OtpStep({ phone, onBack }: Props) {
         code,
       });
       localStorage.setItem("token", res.access_token);
-      setDone(true);
+      router.push("/dashboard");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
-    } finally {
       setLoading(false);
     }
-  }
-
-  if (done) {
-    return (
-      <p className="text-center text-sm text-emerald">You are logged in.</p>
-    );
   }
 
   return (
