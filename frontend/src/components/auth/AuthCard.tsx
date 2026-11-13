@@ -8,6 +8,7 @@ import RolePicker, { type Role } from "./RolePicker";
 type Mode = "login" | "signup";
 
 export default function AuthCard({ initialMode }: { initialMode: Mode }) {
+  const [notice, setNotice] = useState("");
   const [mode, setMode] = useState<Mode>(initialMode);
   const [role, setRole] = useState<Role | null>(null);
 
@@ -23,7 +24,10 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
         />
         <button
           type="button"
-          onClick={() => setMode("login")}
+          onClick={() => {
+            setMode("login");
+            setNotice("");
+          }}
           className={`relative z-10 rounded-md py-2 font-medium transition-colors ${mode === "login" ? "text-ink" : "text-muted"}`}
         >
           Log In
@@ -32,6 +36,7 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
           type="button"
           onClick={() => {
             setMode("signup");
+            setNotice("");
             setRole(null);
           }}
           className={`relative z-10 rounded-md py-2 font-medium transition-colors ${mode === "signup" ? "text-ink" : "text-muted"}`}
@@ -55,6 +60,7 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
               ? "Select how you'll use GrainTrail."
               : "Join with your phone number, no password needed."}
         </p>
+        {notice && <p className="mt-2 text-sm text-gold">{notice}</p>}
       </div>
 
       <div
@@ -62,7 +68,15 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
         className="anim-fade-up [--delay:400ms]"
       >
         {mode === "login" ? (
-          <LoginForm />
+          <LoginForm
+            onNotRegistered={() => {
+              setMode("signup");
+              setRole(null);
+              setNotice(
+                "That number isn't registered. Create an account to continue.",
+              );
+            }}
+          />
         ) : choosingRole ? (
           <RolePicker onSelect={setRole} />
         ) : (

@@ -31,11 +31,12 @@ def signup(data: SignupIn, db: Session = Depends(get_db)):
     return {"message": "Code sent"}
 
 
-@router.post("/login")
-def login(data: PhoneIn, db: Session = Depends(get_db)):
-    if db.scalar(select(User).where(User.phone == data.phone)):
-        send_otp(db, data.phone)
-    return {"message": "If the number is registered, a code was sent"}
+@router.post("/login")  
+def login(data: PhoneIn, db: Session = Depends(get_db)):  
+    if not db.scalar(select(User).where(User.phone == data.phone)): 
+        raise HTTPException(status_code=404, detail="Number not registered")  
+    send_otp(db, data.phone)  
+    return {"message": "Code sent"}  
 
 
 @router.post("/verify-otp", response_model=TokenOut)
@@ -57,3 +58,4 @@ def verify_otp(data: VerifyIn, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserOut) 
 def me(user: User = Depends(get_current_user)):  
     return user 
+

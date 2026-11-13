@@ -3,11 +3,15 @@
 import { useState } from "react";
 import PhoneField from "./PhoneField";
 import OtpStep from "./OtpStep";
-import { post } from "../../lib/api";
+import { ApiError, post } from "../../lib/api";
 import { normalizePhone } from "../../lib/phone";
 import { buttonClass } from "./styles";
 
-export default function LoginForm() {
+export default function LoginForm({
+  onNotRegistered,
+}: {
+  onNotRegistered: () => void;
+}) {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,6 +29,10 @@ export default function LoginForm() {
       await post("/auth/login", { phone: full });
       setPhone(full);
     } catch (e) {
+      if (e instanceof ApiError && e.status === 404) {
+        onNotRegistered();
+        return;
+      }
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
       setLoading(false);
