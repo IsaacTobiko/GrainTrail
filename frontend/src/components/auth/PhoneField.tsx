@@ -8,6 +8,7 @@ const COUNTRIES = [
 
 export default function PhoneField() {
   const [prefix, setPrefix] = useState("+254");
+  const [digits, setDigits] = useState("");
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +79,15 @@ export default function PhoneField() {
         type="tel"
         inputMode="numeric"
         required
-        placeholder="712 345 678"
+        value={digits}
+        onChange={(e) =>
+          setDigits(
+            e.target.value.replace(/\D/g, "").replace(/^0+/, "").slice(0, 9),
+          )
+        }
+        pattern="[0-9]{9}"
+        title="Enter exactly 9 digits, for example 712345678"
+        placeholder="712345678"
         className={inputClass}
       />
     </div>
