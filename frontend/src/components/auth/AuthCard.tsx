@@ -72,9 +72,7 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
             onNotRegistered={() => {
               setMode("signup");
               setRole(null);
-              setNotice(
-                "That number isn't registered. Create an account to continue.",
-              );
+              setNotice("Create an account to continue.");
             }}
           />
         ) : choosingRole ? (
