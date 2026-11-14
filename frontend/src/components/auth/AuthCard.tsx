@@ -86,7 +86,14 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
             >
               ← Change role ({role})
             </button>
-            <SignupForm role={role!} />
+            <SignupForm
+              role={role!}
+              onVerified={() => {
+                setMode("login");
+                setRole(null);
+                setNotice("Account verified. Log in to continue.");
+              }}
+            />
           </>
         )}
       </div>

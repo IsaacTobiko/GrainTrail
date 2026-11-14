@@ -8,7 +8,13 @@ import { post } from "../../lib/api";
 import { normalizePhone } from "../../lib/phone";
 import { buttonClass, inputClass } from "./styles";
 
-export default function SignupForm({ role }: { role: Role }) {
+export default function SignupForm({
+  role,
+  onVerified,
+}: {
+  role: Role;
+  onVerified: () => void;
+}) {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,7 +43,15 @@ export default function SignupForm({ role }: { role: Role }) {
     }
   }
 
-  if (phone) return <OtpStep phone={phone} onBack={() => setPhone("")} />;
+  if (phone)
+    return (
+      <OtpStep
+        phone={phone}
+        mode="signup"
+        onVerified={onVerified}
+        onBack={() => setPhone("")}
+      />
+    );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

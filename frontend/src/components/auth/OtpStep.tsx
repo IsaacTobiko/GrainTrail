@@ -5,9 +5,14 @@ import { useRouter } from "next/navigation";
 import { post } from "../../lib/api";
 import { buttonClass, inputClass } from "./styles";
 
-type Props = { phone: string; onBack: () => void };
+type Props = {
+  phone: string;
+  mode: "login" | "signup";
+  onBack: () => void;
+  onVerified?: () => void;
+};
 
-export default function OtpStep({ phone, onBack }: Props) {
+export default function OtpStep({ phone, mode, onBack, onVerified }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -22,6 +27,10 @@ export default function OtpStep({ phone, onBack }: Props) {
         phone,
         code,
       });
+      if (mode === "signup") {
+        onVerified?.();
+        return;
+      }
       localStorage.setItem("token", res.access_token);
       router.push("/dashboard");
     } catch (e) {

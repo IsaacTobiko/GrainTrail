@@ -39,7 +39,8 @@ export default function LoginForm({
     }
   }
 
-  if (phone) return <OtpStep phone={phone} onBack={() => setPhone("")} />;
+  if (phone)
+    return <OtpStep phone={phone} mode="login" onBack={() => setPhone("")} />;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
