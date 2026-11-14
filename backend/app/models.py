@@ -2,7 +2,7 @@ import enum
 import uuid  
 from datetime import datetime, timezone  
 
-from sqlalchemy import Boolean, DateTime, Enum, String 
+from sqlalchemy import Boolean, DateTime, Enum, Integer, String, func  
 from sqlalchemy.dialects.postgresql import UUID  
 from sqlalchemy.orm import Mapped, mapped_column  
 
@@ -35,3 +35,5 @@ class Otp(Base):
     code_hash: Mapped[str] = mapped_column(String(64)) 
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))  
     used: Mapped[bool] = mapped_column(Boolean, default=False)  
+    attempts: Mapped[int] = mapped_column(Integer, default=0, server_default="0")  
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), server_default=func.now()) 
