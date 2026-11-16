@@ -1,7 +1,10 @@
-import uuid
+import uuid  
+from datetime import datetime  
+from decimal import Decimal 
 
-from pydantic import BaseModel, ConfigDict, Field
-from app.models import Role  
+from pydantic import BaseModel, ConfigDict, Field  
+
+from app.models import DealStatus, Role  
 
 
 class SignupIn(BaseModel):  
@@ -32,3 +35,25 @@ class UserOut(BaseModel):
     phone: str  
     role: Role 
     is_verified: bool 
+
+class DealCreate(BaseModel):  
+    maize_type: str = Field(min_length=1, max_length=40)  
+    quantity_bags: int = Field(gt=0)  
+    price_per_bag: Decimal = Field(gt=0, max_digits=12, decimal_places=2)  
+
+
+class DealStatusUpdate(BaseModel):  
+    status: DealStatus  
+
+
+class DealOut(BaseModel):  
+    model_config = ConfigDict(from_attributes=True)  
+
+    id: uuid.UUID  
+    broker_id: uuid.UUID  
+    maize_type: str 
+    quantity_bags: int  
+    price_per_bag: Decimal  
+    status: DealStatus  
+    created_at: datetime  
+    updated_at: datetime  
