@@ -22,10 +22,17 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
   return data as T;
 }
 
-export function post<T>(path: string, body: unknown): Promise<T> {
+export function post<T>(
+  path: string,
+  body: unknown,
+  token?: string,
+): Promise<T> {
   return request<T>(path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(body),
   });
 }
