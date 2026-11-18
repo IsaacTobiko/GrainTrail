@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Deal, DealStatus } from "../lib/types";
 
 const STATUS_STYLE: Record<DealStatus, string> = {
@@ -18,7 +19,10 @@ const kes = new Intl.NumberFormat("en-KE", {
 export default function DealCard({ deal }: { deal: Deal }) {
   const total = deal.quantity_bags * Number(deal.price_per_bag);
   return (
-    <div className="rounded-xl border border-line bg-card p-5 transition hover:border-emerald">
+    <Link
+      href={`/deals/${deal.id}`}
+      className="block rounded-xl border border-line bg-card p-5 transition hover:border-emerald"
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-lg font-semibold capitalize">
@@ -41,6 +45,6 @@ export default function DealCard({ deal }: { deal: Deal }) {
         </span>
         <span className="font-semibold text-snow">{kes.format(total)}</span>
       </div>
-    </div>
+    </Link>
   );
 }

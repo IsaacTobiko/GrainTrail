@@ -40,3 +40,17 @@ export function post<T>(
 export function get<T>(path: string, token: string): Promise<T> {
   return request<T>(path, { headers: { Authorization: `Bearer ${token}` } });
 }
+export function patch<T>(
+  path: string,
+  body: unknown,
+  token: string,
+): Promise<T> {
+  return request<T>(path, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+}
