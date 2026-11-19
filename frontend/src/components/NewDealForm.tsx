@@ -41,7 +41,7 @@ export default function NewDealForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-3 rounded-xl border border-line bg-card p-5"
+      className="space-y-3 rounded-xl border border-line bg-card p-4 sm:p-5"
     >
       <p className="font-display text-lg font-semibold">New deal</p>
       <select
@@ -53,7 +53,7 @@ export default function NewDealForm({
         <option value="white">White maize</option>
         <option value="yellow">Yellow maize</option>
       </select>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         <input
           name="quantity_bags"
           type="number"
