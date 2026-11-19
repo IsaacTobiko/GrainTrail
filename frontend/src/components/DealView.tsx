@@ -84,7 +84,7 @@ export default function DealView({ id }: { id: string }) {
 
   if (error && !deal) {
     return (
-      <main className="mx-auto max-w-2xl space-y-4 p-6 md:p-8">
+      <main className="mx-auto w-full max-w-2xl space-y-4 p-4 sm:p-6 md:p-8">
         <p className="text-danger">{error}</p>
         <Link href="/dashboard" className="text-sm text-muted hover:text-snow">
           ← Back to dashboard
@@ -100,13 +100,13 @@ export default function DealView({ id }: { id: string }) {
   const total = deal.quantity_bags * Number(deal.price_per_bag);
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 p-6 md:p-8">
+    <main className="mx-auto w-full max-w-2xl space-y-6 p-4 sm:p-6 md:p-8 lg:max-w-3xl">
       <Link href="/dashboard" className="text-sm text-muted hover:text-snow">
         ← Back to dashboard
       </Link>
 
       <header>
-        <h1 className="font-display text-3xl font-semibold capitalize">
+        <h1 className="font-display text-2xl font-semibold capitalize sm:text-3xl">
           {deal.maize_type} maize
         </h1>
         <p className="mt-1 text-sm text-muted">
@@ -120,11 +120,11 @@ export default function DealView({ id }: { id: string }) {
           This deal was cancelled.
         </p>
       ) : (
-        <ol className="space-y-3 rounded-xl border border-line bg-card p-5">
+        <ol className="space-y-3 rounded-xl border border-line bg-card p-4 sm:p-5">
           {STAGES.map((stage, i) => (
             <li key={stage} className="flex items-center gap-3">
               <span
-                className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold ${
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
                   i < currentIndex
                     ? "bg-leaf text-ink"
                     : i === currentIndex
@@ -147,7 +147,7 @@ export default function DealView({ id }: { id: string }) {
       {error && <p className="text-sm text-danger">{error}</p>}
 
       {isBroker && NEXT[deal.status].length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           {NEXT[deal.status].map((next) => (
             <button
               key={next}
@@ -155,8 +155,8 @@ export default function DealView({ id }: { id: string }) {
               onClick={() => move(next)}
               className={
                 next === "cancelled"
-                  ? "rounded-lg border border-danger/40 px-4 py-2 text-sm text-danger transition hover:bg-danger/10 disabled:opacity-50"
-                  : "rounded-lg bg-gradient-to-r from-leaf to-lime px-4 py-2 text-sm font-semibold text-ink transition hover:brightness-110 disabled:opacity-50"
+                  ? "w-full rounded-lg border border-danger/40 px-4 py-2 text-sm text-danger transition hover:bg-danger/10 disabled:opacity-50 sm:w-auto"
+                  : "w-full rounded-lg bg-gradient-to-r from-leaf to-lime px-4 py-2 text-sm font-semibold text-ink transition hover:brightness-110 disabled:opacity-50 sm:w-auto"
               }
             >
               {LABEL[next]}
