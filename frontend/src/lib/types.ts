@@ -15,6 +15,8 @@ export type Deal = {
   status: DealStatus;
   created_at: string;
   updated_at: string;
+  seller: Party | null;
+  buyer: Party | null;
 };
 
 export type User = {
@@ -24,4 +26,10 @@ export type User = {
   phone: string;
   role: string;
   is_verified: boolean;
+};
+
+export type Party = {
+  id: string;
+  first_name: string;
+  last_name: string;
 };

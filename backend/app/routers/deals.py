@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db  
 from app.deps import get_current_user  
 from app.models import Deal, DealStatus, Role, User 
-from app.schemas import DealCreate, DealOut, DealStatusUpdate  
+from app.schemas import AddPartyIn, DealCreate, DealOut, DealStatusUpdate  
 
 router = APIRouter(prefix="/deals", tags=["deals"])  
 
@@ -69,3 +69,20 @@ def update_status(deal_id: uuid.UUID, data: DealStatusUpdate, user: User = Depen
     db.commit()  
     db.refresh(deal)  
     return deal  
+
+@router.post("/{deal_id}/parties", response_model=DealOut) 
+def add_party(deal_id: uuid.UUID, data: AddPartyIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):  
+    deal = get_deal_for_user(db, deal_id, user)  
+    if deal.broker_id != user.id:  
+        raise HTTPException(status_code=403, detail="Only the broker can add people to a deal")  
+    wanted = Role.seller if data.party == "seller" else Role.buyer  
+    person = db.scalar(select(User).where(User.phone == data.phone, User.role == wanted))  
+    if not person:  
+        raise HTTPException(status_code=404, detail=f"No registered {data.party} with that number")  
+    if data.party == "seller": 
+        deal.seller_id = person.id  
+    else:  
+        deal.buyer_id = person.id  
+    db.commit()  
+    db.refresh(deal) 
+    return deal 

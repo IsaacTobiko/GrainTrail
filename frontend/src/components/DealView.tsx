@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { get, patch } from "../lib/api";
 import type { Deal, DealStatus, User } from "../lib/types";
+import PartiesPanel from "./PartiesPanel";
 
 const STAGES: DealStatus[] = [
   "negotiating",
@@ -143,6 +144,8 @@ export default function DealView({ id }: { id: string }) {
           ))}
         </ol>
       )}
+
+      <PartiesPanel deal={deal} isBroker={isBroker} onUpdated={setDeal} />
 
       {error && <p className="text-sm text-danger">{error}</p>}
 
