@@ -7,20 +7,22 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.models import DealStatus, Role
 
+PHONE_PATTERN = r"^\+(254|255)\d{9}$"
+
 
 class SignupIn(BaseModel):
     first_name: str = Field(min_length=1, max_length=80)
     last_name: str = Field(min_length=1, max_length=80)
-    phone: str = Field(min_length=9, max_length=20)
+    phone: str = Field(pattern=PHONE_PATTERN)
     role: Role
 
 
 class PhoneIn(BaseModel):
-    phone: str = Field(min_length=9, max_length=20)
+    phone: str = Field(pattern=PHONE_PATTERN)
 
 
 class VerifyIn(BaseModel):
-    phone: str = Field(min_length=9, max_length=20)
+    phone: str = Field(pattern=PHONE_PATTERN)
     code: str = Field(min_length=6, max_length=6)
 
 
@@ -60,7 +62,7 @@ class PartyOut(BaseModel):
 
 class AddPartyIn(BaseModel):
     party: Literal["seller", "buyer"]
-    phone: str = Field(min_length=9, max_length=20)
+    phone: str = Field(pattern=PHONE_PATTERN)
 
 
 class DealOut(BaseModel):
