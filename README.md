@@ -69,14 +69,16 @@ Next.js  ->  FastAPI  ->  PostgreSQL
 
 Models load once at startup and are served from the same API.
 
-## Simulated and synthetic
+## What's simulated
 
-Be clear about what is real and what is not:
-- Escrow runs on the Daraja sandbox, so no real money moves
-- GPS positions come from a script that simulates a truck
-- ID checks are not matched against government records (IPRS or NIDA)
-- The stop risk and trust models are trained on generated data built from documented rules
-- The price forecast uses public maize price data
+This is a portfolio project, so some parts are faked on purpose:
+
+- Payments use the M-Pesa Daraja sandbox. No real money moves.
+- Truck positions come from a script, not real GPS.
+- ID checks are not matched against IPRS or NIDA.
+- The stop risk and trust models are trained on data I generated from rules in `docs/`.
+- The price forecast uses public maize price data.
+- SMS codes print in the server log until Africa's Talking is connected.
 
 ## Security
 
