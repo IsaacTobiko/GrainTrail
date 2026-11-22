@@ -15,7 +15,11 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
   const choosingRole = mode === "signup" && !role;
 
   return (
-    <section className="mx-auto flex w-full max-w-md flex-col justify-center gap-8 p-8 md:p-12">
+    <section className="mx-auto flex w-full max-w-md flex-col justify-center gap-8 p-6 sm:p-8 md:p-12">
+      <p className="anim-fade-in text-center font-display text-2xl font-extrabold tracking-tight text-snow md:hidden">
+        Grain<span className="text-lime">Trail</span>
+      </p>
+
       <div className="anim-fade-up relative mx-auto grid w-56 grid-cols-2 rounded-lg border border-line bg-ink p-1 text-sm [--delay:100ms]">
         <span
           className={`absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-md bg-gradient-to-r from-leaf to-lime transition-transform duration-300 ${
@@ -46,7 +50,7 @@ export default function AuthCard({ initialMode }: { initialMode: Mode }) {
       </div>
 
       <div key={`${mode}-${role}-text`} className="text-center">
-        <h1 className="anim-fade-up font-display text-3xl font-semibold [--delay:200ms]">
+        <h1 className="anim-fade-up font-display text-2xl font-semibold [--delay:200ms] sm:text-3xl">
           {mode === "login"
             ? "Welcome back"
             : choosingRole
