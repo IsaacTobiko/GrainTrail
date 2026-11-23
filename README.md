@@ -6,23 +6,26 @@ GrainTrail is a deal tracker for maize brokers and buyers at the Kenya and Tanza
 
 ## Why it exists
 
-At border yards like Illasit, maize moves fast and on trust. A load stopped over moisture, missing papers or overloading can wipe out a broker's whole margin. Buyers wait for hours without knowing where their truck is. Payments and quality disputes are settled by phone call and memory. GrainTrail gives every deal one shared record that all sides can trust.
+At border yards, maize moves fast and on trust. A load stopped over moisture, missing papers or overloading can wipe out a broker's whole margin. Buyers wait for hours without knowing where their truck is. Payments and quality disputes are settled by phone call and memory. GrainTrail gives every deal one shared record that all sides can trust.
 
 ## What it does
 
 **Deals**
+
 - Create a deal with buyer, seller, bags, price per bag and quality grade
 - Moisture readings with photos attached to every load
 - Document checklist per load: phytosanitary certificate, certificate of origin and cess
 - A load cannot be marked cleared until every required document is ticked
 
 **Load trail**
+
 - Status flow: ordered, loading, weighed, cleared, in transit, delivered, closed
 - A stopped state with the reason and estimated cost
 - SMS update to the buyer at every step
 - Live truck position on a map
 
 **Trust and identity**
+
 - Phone number and OTP login
 - Three verification tiers: OTP, ID upload with OCR, and live selfie with face match and liveness check
 - Admin review queue for low confidence cases
@@ -30,10 +33,12 @@ At border yards like Illasit, maize moves fast and on trust. A load stopped over
 - Full audit log of status, payment and verification actions
 
 **Payments**
+
 - Deposit and balance records with M-Pesa references
 - Escrow that holds the deposit and releases the balance when delivery is confirmed
 
 **AI and ML**
+
 - Claude assistant: send "Deal 12 weighed, moisture 14%" and the deal updates, in English or Swahili
 - Document checker: reads a certificate photo, extracts the fields and flags what is missing
 - Stop risk model: scores how likely a load is to be stopped
@@ -41,20 +46,21 @@ At border yards like Illasit, maize moves fast and on trust. A load stopped over
 - Trust score model: estimates default risk from deal history
 
 **Feature phone access**
+
 - USSD menu to check a deal, update a status and see today's prices
 
 ## Tech stack
 
-| Layer | Tools |
-|---|---|
-| Frontend | Next.js, TypeScript, Tailwind CSS |
-| Backend | FastAPI, SQLAlchemy, Alembic, Pydantic |
-| Data | PostgreSQL, Redis, MinIO |
-| Jobs | Celery |
+| Layer     | Tools                                                                   |
+| --------- | ----------------------------------------------------------------------- |
+| Frontend  | Next.js, TypeScript, Tailwind CSS                                       |
+| Backend   | FastAPI, SQLAlchemy, Alembic, Pydantic                                  |
+| Data      | PostgreSQL, Redis, MinIO                                                |
+| Jobs      | Celery                                                                  |
 | AI and ML | Claude API, scikit-learn, XGBoost, Prophet, InsightFace, OpenCV, MLflow |
-| Messaging | Africa's Talking (SMS and USSD) |
-| Payments | M-Pesa Daraja |
-| Tooling | Docker Compose, pytest, GitHub Actions |
+| Messaging | Africa's Talking (SMS and USSD)                                         |
+| Payments  | M-Pesa Daraja                                                           |
+| Tooling   | Docker Compose, pytest, GitHub Actions                                  |
 
 ## Architecture
 
