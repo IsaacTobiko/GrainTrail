@@ -1,6 +1,6 @@
 from fastapi import FastAPI  
 from fastapi.middleware.cors import CORSMiddleware  
-from app.routers import auth, deals
+from app.routers import auth, deals, loads
 
 app = FastAPI(title="GrainTrail API")  
 
@@ -12,6 +12,7 @@ app.add_middleware(
 )
 app.include_router(auth.router)  
 app.include_router(deals.router)
+app.include_router(loads.router)
 
 @app.get("/health")  
 def health():  

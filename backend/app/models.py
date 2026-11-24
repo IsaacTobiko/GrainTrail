@@ -69,10 +69,14 @@ class DealStatus(str, enum.Enum):
 
 
 class LoadStatus(str, enum.Enum):
-    pending = "pending"
-    loaded = "loaded"
+    ordered = "ordered"
+    loading = "loading"
+    weighed = "weighed"
+    cleared = "cleared"
     in_transit = "in_transit"
     delivered = "delivered"
+    closed = "closed"
+    stopped = "stopped"
 
 
 class Deal(Base):
@@ -119,8 +123,9 @@ class Load(Base):
     plate_number: Mapped[str] = mapped_column(String(20))
     bags: Mapped[int] = mapped_column(Integer)
     status: Mapped[LoadStatus] = mapped_column(
-        Enum(LoadStatus), default=LoadStatus.pending
+        Enum(LoadStatus), default=LoadStatus.ordered
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
+    transporter: Mapped[User | None] = relationship(foreign_keys=[transporter_id])

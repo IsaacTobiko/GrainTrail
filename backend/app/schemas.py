@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models import DealStatus, Role
+from app.models import DealStatus, LoadStatus, Role
 
 PHONE_PATTERN = r"^\+(254|255)\d{9}$"
 
@@ -78,3 +78,24 @@ class DealOut(BaseModel):
     updated_at: datetime
     seller: PartyOut | None = None
     buyer: PartyOut | None = None
+
+class LoadCreate(BaseModel):
+    plate_number: str = Field(min_length=3, max_length=20)
+    bags: int = Field(gt=0)
+    transporter_phone: str | None = Field(default=None, pattern=PHONE_PATTERN)
+
+
+class LoadStatusUpdate(BaseModel):
+    status: LoadStatus
+
+
+class LoadOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    deal_id: uuid.UUID
+    plate_number: str
+    bags: int
+    status: LoadStatus
+    created_at: datetime
+    transporter: PartyOut | None = None
