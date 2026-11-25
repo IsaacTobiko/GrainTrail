@@ -7,8 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.models import DealStatus, LoadStatus, Role
 
-PHONE_PATTERN = r"^\+(254|255)\d{9}$"
-
+PHONE_PATTERN = r"^\+(254[17]|255[67])\d{8}$"
 
 class SignupIn(BaseModel):
     first_name: str = Field(min_length=1, max_length=80)
