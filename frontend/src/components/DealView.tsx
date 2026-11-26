@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { get, patch } from "../lib/api";
 import type { Deal, DealStatus, User } from "../lib/types";
 import PartiesPanel from "./PartiesPanel";
+import LoadsPanel from "./LoadsPanel";
 
 const STAGES: DealStatus[] = [
   "negotiating",
@@ -146,6 +147,14 @@ export default function DealView({ id }: { id: string }) {
       )}
 
       <PartiesPanel deal={deal} isBroker={isBroker} onUpdated={setDeal} />
+
+      <LoadsPanel
+        dealId={deal.id}
+        dealBags={deal.quantity_bags}
+        canAdd={
+          isBroker && (deal.status === "agreed" || deal.status === "in_transit")
+        }
+      />
 
       {error && <p className="text-sm text-danger">{error}</p>}
 

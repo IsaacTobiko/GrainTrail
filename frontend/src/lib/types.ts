@@ -33,3 +33,23 @@ export type Party = {
   first_name: string;
   last_name: string;
 };
+
+export type LoadStatus =
+  | "ordered"
+  | "loading"
+  | "weighed"
+  | "cleared"
+  | "in_transit"
+  | "delivered"
+  | "closed"
+  | "stopped";
+
+export type Load = {
+  id: string;
+  deal_id: string;
+  plate_number: string;
+  bags: number;
+  status: LoadStatus;
+  created_at: string;
+  transporter: Party | null;
+};
