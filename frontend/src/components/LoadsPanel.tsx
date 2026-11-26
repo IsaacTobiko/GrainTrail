@@ -2,27 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { get, post } from "../lib/api";
-import type { Load, LoadStatus } from "../lib/types";
+import type { Load } from "../lib/types";
+import LoadRow from "./LoadRow";
 import { buttonClass, inputClass } from "./auth/styles";
-
-const STATUS_STYLE: Record<LoadStatus, string> = {
-  ordered: "bg-gold/10 text-gold",
-  loading: "bg-gold/10 text-gold",
-  weighed: "bg-emerald/10 text-emerald",
-  cleared: "bg-emerald/10 text-emerald",
-  in_transit: "bg-lime/10 text-lime",
-  delivered: "bg-leaf/10 text-leaf",
-  closed: "bg-leaf/20 text-leaf",
-  stopped: "bg-danger/10 text-danger",
-};
 
 type Props = {
   dealId: string;
   dealBags: number;
   canAdd: boolean;
+  isBroker: boolean;
 };
 
-export default function LoadsPanel({ dealId, dealBags, canAdd }: Props) {
+export default function LoadsPanel({
+  dealId,
+  dealBags,
+  canAdd,
+  isBroker,
+}: Props) {
   const [loads, setLoads] = useState<Load[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,12 +39,14 @@ export default function LoadsPanel({ dealId, dealBags, canAdd }: Props) {
     setError("");
     setLoading(true);
     const data = new FormData(form);
+    const driver = String(data.get("transporter_phone") ?? "").trim();
     try {
       const load = await post<Load>(
         `/deals/${dealId}/loads`,
         {
           plate_number: data.get("plate_number"),
           bags: Number(data.get("bags")),
+          ...(driver ? { transporter_phone: driver } : {}),
         },
         localStorage.getItem("token") ?? "",
       );
@@ -77,27 +75,16 @@ export default function LoadsPanel({ dealId, dealBags, canAdd }: Props) {
       ) : (
         <ul className="space-y-2">
           {loads.map((load) => (
-            <li
+            <LoadRow
               key={load.id}
-              className="flex items-center justify-between gap-3 rounded-lg border border-line p-3"
-            >
-              <div>
-                <p className="font-semibold tracking-wide">
-                  {load.plate_number}
-                </p>
-                <p className="text-xs text-muted">
-                  {load.bags} bags
-                  {load.transporter
-                    ? ` · ${load.transporter.first_name} ${load.transporter.last_name}`
-                    : " · no driver yet"}
-                </p>
-              </div>
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-medium capitalize ${STATUS_STYLE[load.status]}`}
-              >
-                {load.status.replace("_", " ")}
-              </span>
-            </li>
+              load={load}
+              who={isBroker ? "broker" : null}
+              onChange={(updated) =>
+                setLoads((prev) =>
+                  prev.map((l) => (l.id === updated.id ? updated : l)),
+                )
+              }
+            />
           ))}
         </ul>
       )}
@@ -125,6 +112,14 @@ export default function LoadsPanel({ dealId, dealBags, canAdd }: Props) {
             required
             placeholder={`Bags (up to ${left})`}
             className={inputClass}
+          />
+          <input
+            name="transporter_phone"
+            type="tel"
+            pattern="^\+(254[17]|255[67])[0-9]{8}$"
+            title="Use the full number, for example +254744444444"
+            placeholder="Driver phone, optional (+254...)"
+            className={`${inputClass} sm:col-span-2`}
           />
           <button
             type="submit"

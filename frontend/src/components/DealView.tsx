@@ -151,6 +151,7 @@ export default function DealView({ id }: { id: string }) {
       <LoadsPanel
         dealId={deal.id}
         dealBags={deal.quantity_bags}
+        isBroker={isBroker}
         canAdd={
           isBroker && (deal.status === "agreed" || deal.status === "in_transit")
         }

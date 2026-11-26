@@ -3,14 +3,16 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { get } from "../../lib/api";
-import type { Deal, User } from "../../lib/types";
+import type { Deal, Load, User } from "../../lib/types";
 import DealCard from "../../components/DealCard";
+import LoadRow from "../../components/LoadRow";
 import NewDealForm from "../../components/NewDealForm";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
+  const [loads, setLoads] = useState<Load[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -18,10 +20,14 @@ export default function DashboardPage() {
       router.replace("/auth");
       return;
     }
-    Promise.all([get<User>("/auth/me", token), get<Deal[]>("/deals", token)])
-      .then(([u, d]) => {
+    get<User>("/auth/me", token)
+      .then(async (u) => {
         setUser(u);
-        setDeals(d);
+        if (u.role === "transporter") {
+          setLoads(await get<Load[]>("/loads/mine", token));
+        } else {
+          setDeals(await get<Deal[]>("/deals", token));
+        }
       })
       .catch(() => {
         localStorage.removeItem("token");
@@ -61,22 +67,50 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <section className="space-y-3">
-        <h2 className="font-display text-lg font-semibold sm:text-xl">
-          Your deals
-        </h2>
-        {deals.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-muted">
-            No deals yet.
-          </p>
-        ) : (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {deals.map((deal) => (
-              <DealCard key={deal.id} deal={deal} />
-            ))}
-          </div>
-        )}
-      </section>
+      {user.role === "transporter" ? (
+        <section className="space-y-3">
+          <h2 className="font-display text-lg font-semibold sm:text-xl">
+            Your loads
+          </h2>
+          {loads.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-muted">
+              No loads assigned to you yet.
+            </p>
+          ) : (
+            <ul className="grid gap-3 md:grid-cols-2">
+              {loads.map((load) => (
+                <LoadRow
+                  key={load.id}
+                  load={load}
+                  who="transporter"
+                  onChange={(updated) =>
+                    setLoads((prev) =>
+                      prev.map((l) => (l.id === updated.id ? updated : l)),
+                    )
+                  }
+                />
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : (
+        <section className="space-y-3">
+          <h2 className="font-display text-lg font-semibold sm:text-xl">
+            Your deals
+          </h2>
+          {deals.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-muted">
+              No deals yet.
+            </p>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {deals.map((deal) => (
+                <DealCard key={deal.id} deal={deal} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </main>
   );
 }
