@@ -130,6 +130,16 @@ def update_load_status(
         raise HTTPException(
             status_code=403, detail="Only the broker can make that change"
         )
+    if data.status == LoadStatus.stopped:
+        if not data.reason or not data.reason.strip():
+            raise HTTPException(
+                status_code=400, detail="Please give a reason for the stop"
+            )
+        load.stop_reason = data.reason.strip()
+        load.stop_cost = data.cost
+    else:
+        load.stop_reason = None
+        load.stop_cost = None
     load.status = data.status
     db.commit()
     db.refresh(load)

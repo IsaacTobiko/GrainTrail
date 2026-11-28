@@ -52,4 +52,6 @@ export type Load = {
   status: LoadStatus;
   created_at: string;
   transporter: Party | null;
+  stop_reason: string | null;
+  stop_cost: string | null;
 };

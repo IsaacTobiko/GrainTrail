@@ -122,6 +122,8 @@ class Load(Base):
     )
     plate_number: Mapped[str] = mapped_column(String(20))
     bags: Mapped[int] = mapped_column(Integer)
+    stop_reason: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    stop_cost: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
     status: Mapped[LoadStatus] = mapped_column(
         Enum(LoadStatus), default=LoadStatus.ordered
     )

@@ -86,6 +86,8 @@ class LoadCreate(BaseModel):
 
 class LoadStatusUpdate(BaseModel):
     status: LoadStatus
+    reason: str | None = Field(default=None, max_length=200)
+    cost: Decimal | None = Field(default=None, ge=0, max_digits=12, decimal_places=2)
 
 
 class LoadOut(BaseModel):
@@ -97,4 +99,6 @@ class LoadOut(BaseModel):
     bags: int
     status: LoadStatus
     created_at: datetime
+    stop_reason: str | None = None
+    stop_cost: Decimal | None = None
     transporter: PartyOut | None = None
